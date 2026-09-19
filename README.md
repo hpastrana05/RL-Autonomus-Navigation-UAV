@@ -4,6 +4,14 @@ El proyecto trata de usar un entorno virtual de control de drones, y una vez ten
 ---
 ## Para correr archivos
 
+Hay que clonar en la misma carpeta padre de este repositorio, el repositorio de `gym-pybullet-drones`
+
+```
+git clone https://github.com/learnsyslab/gym-pybullet-drones.git
+```
+
+Y para correr los archivos que se crean, desde la terminal con el directorio root de este repositorio abierto hay que correr el siguiente comando.
+
 ```
 ../gym-pybullet-drones/.venv/bin/python [archivo.py] --plot false --duration_sec [tiempo]
 ```
@@ -13,15 +21,3 @@ El proyecto trata de usar un entorno virtual de control de drones, y una vez ten
 
 1. **Gym pybullet drones:**   [link](https://learnsyslab.github.io/gym-pybullet-drones/) Entorno virtual para controlar uno o mas drones con datos en tiempo real.
 
----
-## Baseline
-
-El Dron tiene que recibir la acción de ir de un punto A a un punto B y tiene que encontrar la ruta mas optima y siendo capaz de esquivar obstaculos como personas, arboles, edificios, paredes, etc.
-
----
-## Ideas
-
-1. Se pueden tener distintas listas de acciones para modelos distintos:
-	- Una lista de acción que contenga movimientos Arriba, Abajo, Giro izq, Giro der, etc.
-	- Otra lista que contenga las posibles acciones de los motores 
-	
