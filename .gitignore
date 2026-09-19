@@ -1,0 +1,15 @@
+# Simulation output
+results/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local editor and OS files
+.idea/
+.vscode/
+.DS_Store

@@ -2,10 +2,17 @@
 El proyecto trata de usar un entorno virtual de control de drones, y una vez tener el entorno bien configurado, usar datos via imagenes/sensores que ve el dron para mediante Reinforce Learning hacer que vaya del punto A al punto B esquivando obstaculos.
 
 ---
-## Entornos
+## Para correr archivos
+
+```
+../gym-pybullet-drones/.venv/bin/python [archivo.py] --plot false --duration_sec [tiempo]
+```
+
+---
+## Entorno
 
 1. **Gym pybullet drones:**   [link](https://learnsyslab.github.io/gym-pybullet-drones/) Entorno virtual para controlar uno o mas drones con datos en tiempo real.
-2. **Gazebo + PX4 + ROS2:** [Gazebo](http://gazebosim.org/home) [PX4](https://docs.px4.io/main/en/)Entorno mas mas real enfocado a tener situaciones mas centradas en naves industriales
+
 ---
 ## Baseline
 
