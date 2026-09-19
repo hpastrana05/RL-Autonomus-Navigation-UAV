@@ -15,6 +15,6 @@ El Dron tiene que recibir la acción de ir de un punto A a un punto B y tiene qu
 ## Ideas
 
 1. Se pueden tener distintas listas de acciones para modelos distintos:
-	- Una lista de acción que contenga movimientos Arriba, Abajo, Giro iz, Giro der, etc.
+	- Una lista de acción que contenga movimientos Arriba, Abajo, Giro izq, Giro der, etc.
 	- Otra lista que contenga las posibles acciones de los motores 
 	
