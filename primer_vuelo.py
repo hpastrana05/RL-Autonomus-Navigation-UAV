@@ -33,7 +33,7 @@ from gym_pybullet_drones.utils.utils import sync, str2bool
 from gym_pybullet_drones.envs.VelocityAviary import VelocityAviary
 
 from navigation import next_action
-from planner import get_neighbours
+from planner import plan_route, route_to_meters
 
 DEFAULT_DRONE = DroneModel("cf2x")
 DEFAULT_GUI = True
@@ -107,12 +107,15 @@ def run(
 
     #### Ruta a recorrer ######
 
+    cell_size = 0.25
+
     grid = np.zeros((5, 9))
-    
-    route = [
-        (1, 0, 0.1),
-        (1, 1, 0.1)
-    ]
+    grid[1, 4], grid[2, 4], grid[3, 4] = 1, 1, 1
+
+    route = plan_route(grid, (0,2), (8, 2))
+
+    route = route_to_meters(route, cell_size)
+    print(route)
 
     next_obj_idx = 0
 
@@ -146,7 +149,7 @@ def run(
                        )
 
         #### Printout ##############################################
-        env.render()
+        # env.render()
 
         #### Sync the simulation ###################################
         if gui:

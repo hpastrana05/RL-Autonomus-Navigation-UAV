@@ -12,7 +12,8 @@ def next_action(obs, route, next_idx, velocity, tolerance):
         direction = next_pos - pos
 
         if distance < tolerance:
-            next_idx =+ 1
+            print(f"Point: {next_pos} reached")
+            next_idx += 1
 
         action = [direction[0], direction[1], direction[2], vel]
                 

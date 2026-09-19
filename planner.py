@@ -1,3 +1,4 @@
+import numpy as np
 
 def get_neighbours(grid, pos_x, pos_y):
     neighbours = []
@@ -22,8 +23,54 @@ def get_neighbours(grid, pos_x, pos_y):
     return neighbours
 
 
+def heuristic(cell, goal):
+    return abs(cell[0] - goal[0]) + abs(cell[1] - goal[1])
 
+def _check_if_inside(grid, point):
+    if 0 <= point[0] < len(grid[0]) and 0 <= point[1] < len(grid):
+        return True
+    return False
 
 def plan_route(grid, start, goal):
-    pass
-    
+    """
+    Start and goal are in (x, y)
+    """
+    if not _check_if_inside(grid, start) or not _check_if_inside(grid, goal):
+        raise ValueError("Start/Goal are not inside the grid")
+
+    pending = [start]
+    cost_so_far = {start: 0}
+    came_from = {start: None}
+
+    while pending:
+        current = min(pending, key=lambda cell: cost_so_far[cell] + heuristic(cell, goal))
+        pending.remove(current)
+
+        if current == goal:
+            route = []
+            while current is not None:
+                route.append(current)
+                current = came_from[current]
+            return list(reversed(route))
+
+        for neighbour in get_neighbours(grid, current[0], current[1]):
+            new_cost = cost_so_far[current] + 1
+
+            if neighbour not in cost_so_far or new_cost < cost_so_far[neighbour]:
+                cost_so_far[neighbour] = new_cost
+                came_from[neighbour] = current
+
+                if neighbour not in pending:
+                    pending.append(neighbour)
+
+    return []
+
+
+def route_to_meters(route, cell_size):
+    new_route = []
+    for point in route:
+        x = point[0] * cell_size
+        y = (point[1]-2) * cell_size
+        z = 0.1
+        new_route.append((x,y,z))
+    return new_route
