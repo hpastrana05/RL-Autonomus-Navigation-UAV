@@ -35,6 +35,7 @@ from gym_pybullet_drones.envs.VelocityAviary import VelocityAviary
 from navigation import next_action
 from planner import plan_route, route_to_meters
 from grid import Grid
+from route import Route
 
 DEFAULT_DRONE = DroneModel("cf2x")
 DEFAULT_GUI = True
@@ -141,12 +142,9 @@ def run(
     
     grid.add_obstacles(obstacles)
 
-    route = plan_route(grid.grid_map, start, goal)
+    route = Route(route_to_meters(plan_route(grid.grid_map, start, goal),cell_size))
+    
 
-    route = route_to_meters(route, cell_size)
-    print(route)
-
-    next_obj_idx = 0
 
 
     #### Run the simulation ####################################
@@ -154,7 +152,7 @@ def run(
     START = time.time()
     for i in range(0, int(duration_sec*env.CTRL_FREQ)):
 
-        ############################################################
+        ######################################################next_obj_idx######
         # for j in range(3): env._showDroneLocalAxes(j)
 
         #### Step the simulation ###################################
@@ -162,7 +160,7 @@ def run(
 
         #### Compute control for the current way point #############
         for j in range(1):
-            action[j,:], next_obj_idx = next_action(obs, route, next_obj_idx, 1, 0.05)
+            action[j,:] = next_action(obs, route, 1, 0.05)
 
 
         #### Go to the next way point and loop #####################
