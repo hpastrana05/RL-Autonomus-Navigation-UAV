@@ -24,6 +24,9 @@ def get_neighbours(grid, pos_x, pos_y):
 
 
 def heuristic(cell, goal):
+    """
+    Right now using manhattan distance
+    """
     return abs(cell[0] - goal[0]) + abs(cell[1] - goal[1])
 
 def _check_if_inside(grid, point):
@@ -34,6 +37,7 @@ def _check_if_inside(grid, point):
 def plan_route(grid, start, goal):
     """
     Start and goal are in (x, y)
+    A* algorithm
     """
     if not _check_if_inside(grid, start) or not _check_if_inside(grid, goal):
         raise ValueError("Start/Goal are not inside the grid")

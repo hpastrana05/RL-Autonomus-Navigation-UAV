@@ -34,6 +34,7 @@ from gym_pybullet_drones.envs.VelocityAviary import VelocityAviary
 
 from navigation import next_action
 from planner import plan_route, route_to_meters
+from grid import Grid
 
 DEFAULT_DRONE = DroneModel("cf2x")
 DEFAULT_GUI = True
@@ -88,6 +89,30 @@ def run(
     PYB_CLIENT = env.getPyBulletClient()
     DRONE_IDS = env.getDroneIds()
 
+    ### Obstaculos creados
+
+    wall_half_extents = [0.125, 0.375, 0.3]   # La mitad  de las dimensiones
+    wall_collision = p.createCollisionShape(
+        p.GEOM_BOX,
+        halfExtents=wall_half_extents,
+        physicsClientId=PYB_CLIENT,
+    )
+
+    wall_visual = p.createVisualShape(
+        p.GEOM_BOX,
+        halfExtents=wall_half_extents,
+        rgbaColor=[0.9, 0.2, 0.2, 1],
+        physicsClientId=PYB_CLIENT,
+    )
+
+    p.createMultiBody(
+        baseMass=0,
+        baseCollisionShapeIndex=wall_collision,
+        baseVisualShapeIndex=wall_visual,
+        basePosition = [1.0, 0.0, 0.3],
+        physicsClientId=PYB_CLIENT,
+    )
+
     #### Compute number of control steps in the simlation ######
     PERIOD = duration_sec
     NUM_WP = control_freq_hz*PERIOD
@@ -108,11 +133,15 @@ def run(
     #### Ruta a recorrer ######
 
     cell_size = 0.25
+    obstacles = [(4,1), (4, 2), (4, 3)]
+    start = (0, 2)
+    goal = (8, 2)
 
-    grid = np.zeros((5, 9))
-    grid[1, 4], grid[2, 4], grid[3, 4] = 1, 1, 1
+    grid = Grid(9, 5, cell_size)
+    
+    grid.add_obstacles(obstacles)
 
-    route = plan_route(grid, (0,2), (8, 2))
+    route = plan_route(grid.grid_map, start, goal)
 
     route = route_to_meters(route, cell_size)
     print(route)
