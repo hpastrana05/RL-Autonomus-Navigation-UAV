@@ -1,4 +1,5 @@
 import numpy as np
+from grid import Grid
 
 def get_neighbours(grid, pos_x, pos_y):
     neighbours = []
@@ -70,11 +71,11 @@ def plan_route(grid, start, goal):
     return []
 
 
-def route_to_meters(route, cell_size):
-    new_route = []
-    for point in route:
-        x = point[0] * cell_size
-        y = point[1] * cell_size
-        z = 0.1
-        new_route.append((x,y,z))
-    return new_route
+def route_to_meters(route, grid: Grid):
+    result = []
+    for x, y in route:
+        result.append(grid.grid_to_world(x, y))
+    
+    return result
+
+    

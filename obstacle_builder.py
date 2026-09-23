@@ -26,11 +26,11 @@ def create_grid_obstacles(grid: Grid, pybullet_client, obstacle_height, obstacle
     for y, row in enumerate(grid.grid_map):
         for x, cell in enumerate(row):
             if cell:
-                position = [
-                    x * grid.cell_size,
-                    y * grid.cell_size,
-                    obstacle_height/2
-                ]
+                position = grid.grid_to_world(
+                    x,
+                    y,
+                    obstacle_height/2,
+                )
 
                 obs_id = p.createMultiBody(
                     baseMass=0,

@@ -114,24 +114,25 @@ def run(
     #### Ruta a recorrer ######
 
     cell_size = 0.15 # Drone size == 0.12 but use 0.15, 0.20 or 0.25
-    
-    height = 0.3
-    color = [0.1, 0.1, 0.1]
+
+    height = 0.6
+    color = [0.8, 0.1, 0.1, 1.0]
     obstacles = [(4,1), (4, 2), (4, 3)]
 
-    start = (0, 2)
-    goal = (8, 2)
+    start = (0, 0)
+    goal = (7, 7)
 
-    grid = Grid(9, 5, cell_size)
+    grid = Grid(9, 9, cell_size)
     
     grid.add_obstacles(obstacles)
 
-    route = Route(route_to_meters(plan_route(grid.grid_map, start, goal),cell_size))
+    route_cells = plan_route(grid.grid_map, start, goal)
+    route = Route(route_to_meters(route_cells, grid))
     
 
     ### Crear obstaculos
     
-    obstacles = create_grid_obstacles(grid, PYB_CLIENT, height, color)
+    obst_list = create_grid_obstacles(grid, PYB_CLIENT, height, color)
 
 
     #### Run the simulation ####################################
