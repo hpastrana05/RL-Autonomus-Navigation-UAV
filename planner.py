@@ -74,7 +74,7 @@ def route_to_meters(route, cell_size):
     new_route = []
     for point in route:
         x = point[0] * cell_size
-        y = (point[1]-2) * cell_size
+        y = point[1] * cell_size
         z = 0.1
         new_route.append((x,y,z))
     return new_route

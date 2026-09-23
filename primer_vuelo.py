@@ -36,6 +36,7 @@ from navigation import next_action
 from planner import plan_route, route_to_meters
 from grid import Grid
 from route import Route
+from obstacle_builder import create_grid_obstacles
 
 DEFAULT_DRONE = DroneModel("cf2x")
 DEFAULT_GUI = True
@@ -92,27 +93,6 @@ def run(
 
     ### Obstaculos creados
 
-    wall_half_extents = [0.125, 0.375, 0.3]   # La mitad  de las dimensiones
-    wall_collision = p.createCollisionShape(
-        p.GEOM_BOX,
-        halfExtents=wall_half_extents,
-        physicsClientId=PYB_CLIENT,
-    )
-
-    wall_visual = p.createVisualShape(
-        p.GEOM_BOX,
-        halfExtents=wall_half_extents,
-        rgbaColor=[0.9, 0.2, 0.2, 1],
-        physicsClientId=PYB_CLIENT,
-    )
-
-    p.createMultiBody(
-        baseMass=0,
-        baseCollisionShapeIndex=wall_collision,
-        baseVisualShapeIndex=wall_visual,
-        basePosition = [1.0, 0.0, 0.3],
-        physicsClientId=PYB_CLIENT,
-    )
 
     #### Compute number of control steps in the simlation ######
     PERIOD = duration_sec
@@ -133,8 +113,12 @@ def run(
 
     #### Ruta a recorrer ######
 
-    cell_size = 0.25
+    cell_size = 0.15 # Drone size == 0.12 but use 0.15, 0.20 or 0.25
+    
+    height = 0.3
+    color = [0.1, 0.1, 0.1]
     obstacles = [(4,1), (4, 2), (4, 3)]
+
     start = (0, 2)
     goal = (8, 2)
 
@@ -145,6 +129,9 @@ def run(
     route = Route(route_to_meters(plan_route(grid.grid_map, start, goal),cell_size))
     
 
+    ### Crear obstaculos
+    
+    obstacles = create_grid_obstacles(grid, PYB_CLIENT, height, color)
 
 
     #### Run the simulation ####################################
