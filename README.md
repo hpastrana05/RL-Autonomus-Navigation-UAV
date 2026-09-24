@@ -13,7 +13,7 @@ git clone https://github.com/learnsyslab/gym-pybullet-drones.git
 Y para correr los archivos que se crean, desde la terminal con el directorio root de este repositorio abierto hay que correr el siguiente comando.
 
 ```
-../gym-pybullet-drones/.venv/bin/python [archivo.py] --plot false --duration_sec [tiempo]
+python [archivo.py] --plot false --duration_sec [tiempo]
 ```
 
 ---
@@ -21,3 +21,8 @@ Y para correr los archivos que se crean, desde la terminal con el directorio roo
 
 1. **Gym pybullet drones:**   [link](https://learnsyslab.github.io/gym-pybullet-drones/) Entorno virtual para controlar uno o mas drones con datos en tiempo real.
 
+---
+### TODO
+
+- [ ] Usar sensores para evitar paredes
+- [ ] Establecer las observaciones para el RL
