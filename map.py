@@ -1,5 +1,6 @@
 import math
 import matplotlib.pyplot as plt
+import numpy as np
 
 class Map:
 
@@ -36,6 +37,29 @@ class Map:
 
         return True
 
+    def is_path_safe(self, start_position, end_position):
+        start = np.asarray(start_position, dtype=float)
+        end = np.asarray(end_position, dtype=float)
+
+        segment = end - start
+        segment_length_squared = np.dot(segment, segment)
+
+        for obstacle in self.obstacle_points:
+            obstacle = np.asarray(obstacle, dtype=float)
+
+            if segment_length_squared == 0:
+                nearest_point = start
+            else:
+                progress = np.dot(obstacle-start, segment) / segment_length_squared
+                progress = np.clip(progress, 0.0, 1.0)
+
+                nearest_point = start + progress * segment
+            distance = np.linalg.norm(obstacle-nearest_point)
+
+            if distance <= self.safety_distance:
+                return False
+        return True
+    
     def plot(self):
         figure, axis = plt.subplots()
 

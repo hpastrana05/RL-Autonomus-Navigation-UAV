@@ -10,11 +10,11 @@ from map import Map
 from sensors import ProximitySensor
 from obstacle_builder import create_box_obstacle
 from scenario_loader import load_scenario
-
+from navigation import action_towards_goal, action_with_local_avoidance
 
 # ----- Simulation -----
 GUI = True
-SIMULATION_DURATION_SECONDS = 5
+SIMULATION_DURATION_SECONDS = 20
 PYB_FREQUENCY_HZ = 240
 CONTROL_FREQUENCY_HZ = 48
 
@@ -24,20 +24,22 @@ INITIAL_POSITION = [0.0, 0.0, 0.1]
 INITIAL_ORIENTATION = [0.0, 0.0, 0.0]
 
 # ----- Movement -----
-SPEED_FRACTION = 0.25
+SPEED_FRACTION = 0.5
 
 # ----- Proximity sensor -----
-SENSOR_RADIUS = 0.30
+SENSOR_RADIUS = 0.50
 SHOW_SENSOR_BUBBLE = True
+# STOP_ON_DETECTION = True
 
 # ----- Local map -----
 DRONE_RADIUS = 0.06
-SAFETY_MARGIN = 0.05
+SAFETY_MARGIN = 0.20
 MERGE_DISTANCE = 0.05
 SHOW_MAP = True
+LOOKAHEAD_DISTANCE = 0.35
 
 # ----- Scenario -----
-SCENARIO_PATH = "scenarios/single_wall.json"
+SCENARIO_PATH = "scenarios/obstacle_in_path.json"
 
 
 def run():
@@ -98,24 +100,32 @@ def run():
 
     # ----- Action will perform -----
     # actually nothing
-    
+    action = np.array([[0.0, 1.0, 0.0, SPEED_FRACTION]])
+    goal_reached=False
     start_time = time.time()
 
     # ----- Primary loop of execution -------
     for step in range(number_of_steps):
-
-        if step < number_of_steps //2:
-            action = np.array([[0.0, 1.0, 0.0, SPEED_FRACTION]])
-        else:
-            action = np.zeros((1,4))
         
         observation, reward, terminated, truncated, info = env.step(action)
 
+        current_pos = observation[0, 0:3]
+        
         detections = sensor.detect(obstacle_ids)
+        
         local_map.update_drone_position(observation[0, 0:3])
-
         for detection in detections:
             local_map.add_obstacle(detection["position"])
+
+        next_action, goal_reached = action_with_local_avoidance(
+            current_pos,
+            end_position,
+            local_map,
+            SPEED_FRACTION,
+            LOOKAHEAD_DISTANCE
+        )
+
+        action[0] = next_action
         
         if step % env.CTRL_FREQ == 0:
             if detections:
@@ -131,7 +141,7 @@ def run():
     env.close()
 
     if SHOW_MAP:
-        local_map.plot_3d()
+        local_map.plot()
 
 if __name__ == "__main__":
     run()
