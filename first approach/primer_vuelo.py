@@ -32,21 +32,21 @@ from gym_pybullet_drones.utils.utils import sync, str2bool
 
 from gym_pybullet_drones.envs.VelocityAviary import VelocityAviary
 
-from navigation import next_action
-from planner import plan_route, route_to_meters
-from grid import Grid
-from route import Route
-from obstacle_builder import create_grid_obstacles
+from  import next_action
+from  import plan_route, route_to_meters
+from  import Grid
+from  import Route
+from  import create_grid_obstacles
 
 DEFAULT_DRONE = DroneModel("cf2x")
 DEFAULT_GUI = True
 DEFAULT_RECORD_VIDEO = False
-DEFAULT_PLOT = True
+DEFAULT_PLOT = False
 DEFAULT_USER_DEBUG_GUI = False
 DEFAULT_OBSTACLES = False
 DEFAULT_SIMULATION_FREQ_HZ = 240
 DEFAULT_CONTROL_FREQ_HZ = 48
-DEFAULT_DURATION_SEC = 5
+DEFAULT_DURATION_SEC = 30
 DEFAULT_OUTPUT_FOLDER = 'results'
 DEFAULT_COLAB = False
 
@@ -90,9 +90,6 @@ def run(
     #### Obtain the PyBullet Client ID from the environment ####
     PYB_CLIENT = env.getPyBulletClient()
     DRONE_IDS = env.getDroneIds()
-
-    ### Obstaculos creados
-
 
     #### Compute number of control steps in the simlation ######
     PERIOD = duration_sec
@@ -140,7 +137,7 @@ def run(
     START = time.time()
     for i in range(0, int(duration_sec*env.CTRL_FREQ)):
 
-        ######################################################next_obj_idx######
+        ########################################Uc3############next_obj_idx######
         # for j in range(3): env._showDroneLocalAxes(j)
 
         #### Step the simulation ###################################

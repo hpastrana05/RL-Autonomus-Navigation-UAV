@@ -1,5 +1,5 @@
 import numpy as np
-from grid import Grid
+from  import Grid
 
 def get_neighbours(grid, pos_x, pos_y):
     neighbours = []
