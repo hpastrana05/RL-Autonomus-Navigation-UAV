@@ -59,8 +59,15 @@ class Map:
             if distance <= self.safety_distance:
                 return False
         return True
+
+    def plot(self, modes:list[str]=["2d"]):
+        for mode in modes:
+            if mode=="2d":
+                self.plot_2d()
+            elif mode=="3d":
+                self.plot_3d()
     
-    def plot(self):
+    def plot_2d(self):
         figure, axis = plt.subplots()
 
         if self.drone_path:

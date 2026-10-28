@@ -16,7 +16,7 @@ from navigation import action_towards_goal, action_with_local_avoidance
 GUI = True
 SIMULATION_DURATION_SECONDS = 20
 PYB_FREQUENCY_HZ = 240
-CONTROL_FREQUENCY_HZ = 48
+CONTROL_FREQUENCY_HZ = 120    # Velocidad de actualizacion de sensores base : 48
 
 # ----- Drone -----
 DRONE_MODEL = DroneModel.CF2X
@@ -24,7 +24,7 @@ INITIAL_POSITION = [0.0, 0.0, 0.1]
 INITIAL_ORIENTATION = [0.0, 0.0, 0.0]
 
 # ----- Movement -----
-SPEED_FRACTION = 0.5
+SPEED_FRACTION = 1.0
 
 # ----- Proximity sensor -----
 SENSOR_RADIUS = 0.50
@@ -36,6 +36,7 @@ DRONE_RADIUS = 0.06
 SAFETY_MARGIN = 0.20
 MERGE_DISTANCE = 0.05
 SHOW_MAP = True
+MAP_MODES = ["2d","3d"]
 LOOKAHEAD_DISTANCE = 0.35
 
 # ----- Scenario -----
@@ -99,7 +100,7 @@ def run():
     number_of_steps = int(SIMULATION_DURATION_SECONDS * env.CTRL_FREQ)
 
     # ----- Action will perform -----
-    # actually nothing
+    # 
     action = np.array([[0.0, 1.0, 0.0, SPEED_FRACTION]])
     goal_reached=False
     start_time = time.time()
@@ -141,7 +142,7 @@ def run():
     env.close()
 
     if SHOW_MAP:
-        local_map.plot()
+        local_map.plot(MAP_MODES)
 
 if __name__ == "__main__":
     run()
