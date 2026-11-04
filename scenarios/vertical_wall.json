@@ -1,0 +1,15 @@
+{
+  "name": "vertical_wall",
+  "start": {
+    "position": [0.0, 0.0, 0.1],
+    "orientation": [0.0, 0.0, 0.0]
+  },
+  "end": [0.0, 2.0, 0.1],
+  "obstacles": [
+    {
+      "position": [0.0, 1.0, 0.35],
+      "half_extents": [0.7, 0.1, 0.35],
+      "color": [1.0, 0.0, 0.0, 1.0]
+    }
+  ]
+}

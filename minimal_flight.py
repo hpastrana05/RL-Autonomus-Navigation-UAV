@@ -38,9 +38,10 @@ MERGE_DISTANCE = 0.05
 SHOW_MAP = True
 MAP_MODES = ["2d", "3d"]
 LOOKAHEAD_DISTANCE = 0.35
+MIN_ALTITUDE = 0.1
 
 # ----- Scenario -----
-SCENARIO_PATH = "scenarios/obstacle_in_path.json"
+SCENARIO_PATH = "scenarios/vertical_corridor.json"
 
 
 def run():
@@ -123,7 +124,8 @@ def run():
             end_position,
             local_map,
             SPEED_FRACTION,
-            LOOKAHEAD_DISTANCE
+            LOOKAHEAD_DISTANCE,
+            MIN_ALTITUDE
         )
 
         action[0] = next_action

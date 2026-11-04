@@ -1,0 +1,25 @@
+{
+  "name": "vertical_corridor",
+  "start": {
+    "position": [0.0, 0.0, 0.1],
+    "orientation": [0.0, 0.0, 0.0]
+  },
+  "end": [0.0, 2.0, 0.1],
+  "obstacles": [
+    {
+      "position": [0.0, 1.1, 0.35],
+      "half_extents": [0.6, 0.1, 0.35],
+      "color": [1.0, 0.0, 0.0, 1.0]
+    },
+    {
+      "position": [-0.6, 0.55, 0.35],
+      "half_extents": [0.1, 0.75, 0.35],
+      "color": [1.0, 0.7, 0.0, 1.0]
+    },
+    {
+      "position": [0.6, 0.55, 0.35],
+      "half_extents": [0.1, 0.75, 0.35],
+      "color": [1.0, 0.7, 0.0, 1.0]
+    }
+  ]
+}

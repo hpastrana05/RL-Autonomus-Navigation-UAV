@@ -42,7 +42,7 @@ class Map:
         end = np.asarray(end_position, dtype=float)
 
         segment = end - start
-        segment_length_squared = np.dot(segment, segment)
+        segment_length_squared = np.dot(segment, segment) # Longitud del segmento al cuadrado
 
         for obstacle in self.obstacle_points:
             obstacle = np.asarray(obstacle, dtype=float)
@@ -59,6 +59,15 @@ class Map:
             if distance <= self.safety_distance:
                 return False
         return True
+
+    def closest_obstacle_distance(self, position):
+        if not self.obstacle_points:
+            return np.inf
+
+        position = np.asarray(position, dtype=float)
+        return min(
+            np.linalg.norm(position - np.asarray(obstacle))for obstacle in self.obstacle_points
+        )
 
     def plot(self, modes:list[str]=["2d"]):
         for mode in modes:
