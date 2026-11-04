@@ -71,6 +71,7 @@ class Map:
         figure, axis = plt.subplots()
 
         if self.drone_path:
+            print(self.drone_path[0])
             path_x = [position[0] for position in self.drone_path]
             path_y = [position[1] for position in self.drone_path]
 

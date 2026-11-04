@@ -14,7 +14,7 @@ from navigation import action_towards_goal, action_with_local_avoidance
 
 # ----- Simulation -----
 GUI = True
-SIMULATION_DURATION_SECONDS = 20
+SIMULATION_DURATION_SECONDS = 10
 PYB_FREQUENCY_HZ = 240
 CONTROL_FREQUENCY_HZ = 120    # Velocidad de actualizacion de sensores base : 48
 
@@ -24,7 +24,7 @@ INITIAL_POSITION = [0.0, 0.0, 0.1]
 INITIAL_ORIENTATION = [0.0, 0.0, 0.0]
 
 # ----- Movement -----
-SPEED_FRACTION = 1.0
+SPEED_FRACTION = 2.0
 
 # ----- Proximity sensor -----
 SENSOR_RADIUS = 0.50
@@ -33,10 +33,10 @@ SHOW_SENSOR_BUBBLE = True
 
 # ----- Local map -----
 DRONE_RADIUS = 0.06
-SAFETY_MARGIN = 0.20
+SAFETY_MARGIN = 0.35
 MERGE_DISTANCE = 0.05
 SHOW_MAP = True
-MAP_MODES = ["2d","3d"]
+MAP_MODES = ["2d", "3d"]
 LOOKAHEAD_DISTANCE = 0.35
 
 # ----- Scenario -----
@@ -80,6 +80,7 @@ def run():
         MERGE_DISTANCE
     )
     local_map.update_goal_position(end_position)
+    local_map.update_drone_position(initial_position[0])
     
     # ---- Obstacle creation -----
     obstacle_ids = []
@@ -101,7 +102,7 @@ def run():
 
     # ----- Action will perform -----
     # 
-    action = np.array([[0.0, 1.0, 0.0, SPEED_FRACTION]])
+    action = np.array([[0.0, 0.0, 0.0, SPEED_FRACTION]])
     goal_reached=False
     start_time = time.time()
 
@@ -111,10 +112,9 @@ def run():
         observation, reward, terminated, truncated, info = env.step(action)
 
         current_pos = observation[0, 0:3]
-        
         detections = sensor.detect(obstacle_ids)
         
-        local_map.update_drone_position(observation[0, 0:3])
+        local_map.update_drone_position(current_pos)
         for detection in detections:
             local_map.add_obstacle(detection["position"])
 
@@ -128,7 +128,9 @@ def run():
 
         action[0] = next_action
         
+        
         if step % env.CTRL_FREQ == 0:
+            print(next_action)
             if detections:
                 print("Obstacle detected:", detections)
             else:
