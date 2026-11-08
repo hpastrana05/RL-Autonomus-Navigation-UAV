@@ -7,7 +7,7 @@ from gym_pybullet_drones.envs.VelocityAviary import VelocityAviary
 from gym_pybullet_drones.utils.enums import DroneModel, Physics
 
 from map import Map
-from sensors import ProximitySensor
+from sensors import ProximitySensor, LidarSensor
 from obstacle_builder import create_box_obstacle
 from scenario_loader import load_scenario
 from navigation import action_towards_goal, action_with_local_avoidance
@@ -30,6 +30,16 @@ SPEED_FRACTION = 2.0
 SENSOR_RADIUS = 0.50
 SHOW_SENSOR_BUBBLE = True
 # STOP_ON_DETECTION = True
+
+# ---- Lidar sensor -----
+LIDAR_RANGE = 0.5
+LIDAR_RAY_COUNT = 36
+LIDAR_MIN_RANGE = 0.1
+LIDAR_ELEVATION_ANGLES = (
+    -np.pi/6,
+    0.0,
+    np.pi/6,
+)
 
 # ----- Local map -----
 DRONE_RADIUS = 0.06
@@ -71,8 +81,10 @@ def run():
     print("Drone IDs:", env.getDroneIds())
 
     # ----- Proximity sensor -----
-    sensor = ProximitySensor(pybullet_client, drone_id, SENSOR_RADIUS, SHOW_SENSOR_BUBBLE)
+    #sensor = ProximitySensor(pybullet_client, drone_id, SENSOR_RADIUS, SHOW_SENSOR_BUBBLE)
 
+    sensor = LidarSensor(pybullet_client, drone_id, LIDAR_RANGE, LIDAR_RAY_COUNT, LIDAR_ELEVATION_ANGLES, LIDAR_MIN_RANGE)
+    
     # ---- Map Creation ------
 
     local_map = Map(
@@ -113,7 +125,8 @@ def run():
         observation, reward, terminated, truncated, info = env.step(action)
 
         current_pos = observation[0, 0:3]
-        detections = sensor.detect(obstacle_ids)
+        # detections = sensor.detect(obstacle_ids)
+        detections = sensor.scan(current_pos)
         
         local_map.update_drone_position(current_pos)
         for detection in detections:
@@ -133,11 +146,13 @@ def run():
         
         if step % env.CTRL_FREQ == 0:
             print(next_action)
+            """
             if detections:
                 print("Obstacle detected:", detections)
             else:
                 print("No obstacle detected")
-
+            """
+            
             #position = observation[0, 0:3]
             #print("drone position: ", position)
         

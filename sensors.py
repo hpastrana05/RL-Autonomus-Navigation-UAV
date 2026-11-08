@@ -1,5 +1,8 @@
-from numpy.ma.core import minimum
+from imaplib import ParseFlags
+
+import numpy as np
 import pybullet as p
+import math
 
 class ProximitySensor:
     def __init__(self, pybullet_client, drone_id, radius, show_debug = False):
@@ -74,3 +77,75 @@ class ProximitySensor:
             drone_orientation,
             physicsClientId=self.pybullet_client
         )
+
+class LidarSensor:
+
+    def __init__(
+        self,
+        pybullet_client,
+        drone_id,
+        max_range,
+        ray_count=36,
+        elevation_angles=(0.0,),
+        min_range=0.08,
+        min_hit_height=0.03
+    ):
+        self.pybullet_client = pybullet_client
+        self.drone_id = drone_id
+        
+        self.max_range = max_range
+        self.min_range = min_range
+        
+        self.ray_count = ray_count
+        self.elevation_angles = elevation_angles
+        self.min_hit_height = min_hit_height
+        
+        
+    def scan(self, drone_position):
+        drone_position = np.asarray(drone_position, dtype=float)
+
+        ray_starts = []
+        ray_ends = []
+
+        for elevation in self.elevation_angles:
+            for i in range(self.ray_count):
+                yaw = 2 * math.pi * i / self.ray_count
+    
+                direction = np.array([
+                    math.cos(elevation) * math.cos(yaw),
+                    math.cos(elevation) * math.sin(yaw),
+                    math.sin(elevation)
+                ])
+    
+                ray_start = drone_position + direction * self.min_range
+                ray_end = drone_position + direction * self.max_range
+    
+                ray_starts.append(ray_start.tolist())
+                ray_ends.append(ray_end.tolist())
+
+        results = p.rayTestBatch(
+            ray_starts,
+            ray_ends,
+            physicsClientId=self.pybullet_client
+        )
+
+        detections = []
+
+        for result in results:
+            obstacle_id = result[0]
+
+            if obstacle_id == -1 or obstacle_id == self.drone_id:
+                continue
+
+            hit_position = np.asarray(result[3], dtype=float)
+
+            if hit_position[2] < self.min_hit_height:
+                continue
+
+            detections.append({
+                "obstacle_id": obstacle_id,
+                "distance": float(np.linalg.norm(hit_position - drone_position)),
+                "position": tuple(hit_position),
+            })
+            
+        return detections
