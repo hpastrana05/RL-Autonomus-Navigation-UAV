@@ -21,6 +21,9 @@ class Map:
         self.goal_position = tuple(new_pos)
     
     def add_obstacle(self, point):
+        if point == None:
+            return False
+            
         point = tuple(round(float(value), 3) for value in point)
         
         for known in self.obstacle_points:

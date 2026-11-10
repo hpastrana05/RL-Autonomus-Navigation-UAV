@@ -40,6 +40,7 @@ LIDAR_ELEVATION_ANGLES = (
     0.0,
     np.pi/6,
 )
+LIDAR_DEBUG = False
 
 # ----- Local map -----
 DRONE_RADIUS = 0.06
@@ -83,7 +84,7 @@ def run():
     # ----- Proximity sensor -----
     #sensor = ProximitySensor(pybullet_client, drone_id, SENSOR_RADIUS, SHOW_SENSOR_BUBBLE)
 
-    sensor = LidarSensor(pybullet_client, drone_id, LIDAR_RANGE, LIDAR_RAY_COUNT, LIDAR_ELEVATION_ANGLES, LIDAR_MIN_RANGE)
+    sensor = LidarSensor(pybullet_client, drone_id, LIDAR_RANGE, LIDAR_RAY_COUNT, LIDAR_ELEVATION_ANGLES, LIDAR_MIN_RANGE, debug=LIDAR_DEBUG)
     
     # ---- Map Creation ------
 
@@ -125,8 +126,9 @@ def run():
         observation, reward, terminated, truncated, info = env.step(action)
 
         current_pos = observation[0, 0:3]
+        current_quat = observation[0, 3:7]
         # detections = sensor.detect(obstacle_ids)
-        detections = sensor.scan(current_pos)
+        detections = sensor.scan(current_pos, current_quat)
         
         local_map.update_drone_position(current_pos)
         for detection in detections:
