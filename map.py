@@ -58,31 +58,13 @@ class Map:
         return 1 if warning else 2
 
     def is_path_safe(self, start_position, end_position):
-        start = np.asarray(start_position, dtype=float)
-        end = np.asarray(end_position, dtype=float)
+        if self._path_has_obstacle_within(start_position, end_position, self.hard_clearance):
+           return 0
+           
+        if self._path_has_obstacle_within(start_position, end_position, self.preferred_clearance):
+            return 1
 
-        segment = end - start
-        segment_length_squared = np.dot(segment, segment) # Longitud del segmento al cuadrado
-
-        warning = False
-        
-        for obstacle in self._nearby_path_obstacles(start, end, self.preferred_clearance):
-            obstacle = np.asarray(obstacle, dtype=float)
-
-            if segment_length_squared == 0:
-                nearest_point = start
-            else:
-                progress = np.dot(obstacle-start, segment) / segment_length_squared
-                progress = np.clip(progress, 0.0, 1.0)
-
-                nearest_point = start + progress * segment
-            distance = np.linalg.norm(obstacle-nearest_point)
-
-            if distance <= self.hard_clearance:
-                return 0
-            elif not warning and distance <= self.preferred_clearance:
-                warning = True 
-        return 1 if warning else 2
+        return 2
 
     def closest_obstacle_distance(self, position):
         position = np.asarray(position, dtype=float)
@@ -142,7 +124,29 @@ class Map:
 
                     if obstacle is not None:
                         yield obstacle
-                    
+
+    def _path_has_obstacle_within(self, start, end, clearance):
+        segment = end - start
+        segment_length_squared = np.dot(segment, segment)
+
+        for obstacle in self._nearby_path_obstacles(start, end, clearance):
+
+            if segment_length_squared == 0:
+                nearest_point = start
+            else:
+                progress = np.dot(obstacle -start, segment)
+                progress /= segment_length_squared
+                progress = np.clip(progress, 0.0, 1.0)
+                nearest_point = start + progress * segment
+
+
+            distance = np.linalg.norm(obstacle - nearest_point)
+
+            if distance <= clearance:
+                return True
+
+        return False
+    
     def plot(self, modes:list[str]=["2d"]):
         for mode in modes:
             if mode=="2d":

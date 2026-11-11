@@ -23,7 +23,7 @@ def action_with_local_avoidance(
     local_map,
     speed_fraction,
     lookahead_distance = 0.25,
-    tolerance=0.05,
+    tolerance=0.1,
     min_altitude=0.1
 ):
     current_pos = np.asarray(current_pos, dtype=float)
@@ -96,7 +96,9 @@ def action_with_local_avoidance(
             np.sin(elevation),
         ])
 
-        candidate_position = current_pos + candidate_direction * lookahead_distance
+        candidate_distance = min(lookahead_distance, distance_to_goal)
+        
+        candidate_position = current_pos + candidate_direction * candidate_distance
         
         if candidate_position[2] < min_altitude:
             continue

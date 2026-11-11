@@ -61,7 +61,7 @@ LOOKAHEAD_DISTANCE = 0.35
 MIN_ALTITUDE = 0.1
 
 # ----- Scenario -----
-SCENARIO_PATH = "scenarios/vertical_corridor.json"
+SCENARIO_PATH = "scenarios/empty.json"
 
 
 def run():
@@ -89,7 +89,9 @@ def run():
 
     pybullet_client = env.getPyBulletClient()
     drone_id = env.getDroneIds()[0]
+    
     velocity_debug_id = -1
+    command_debug_id = -1
 
     print("Drone IDs:", env.getDroneIds())
 
@@ -138,6 +140,8 @@ def run():
 
         observation, reward, terminated, truncated, info = env.step(action)
 
+        commanded_vel = action[0,:3] * action[0,3]
+
         current_pos = observation[0, 0:3]
         current_quat = observation[0, 3:7]
         current_vel = observation[0, 10:13]
@@ -150,6 +154,14 @@ def run():
                 velocity_debug_id,
                 current_pos,
                 current_vel,
+            )
+
+            command_debug_id = draw_velocity_vector(
+                pybullet_client,
+                command_debug_id,
+                current_pos,
+                commanded_vel,
+                color=(1.0, 1.0, 0)
             )
 
         local_map.update_drone_position(current_pos)
