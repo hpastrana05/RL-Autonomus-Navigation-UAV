@@ -33,6 +33,10 @@ def action_with_local_avoidance(
 
     distance_to_goal = np.linalg.norm(direction_to_goal)
 
+    if distance_to_goal <= tolerance:
+        return np.zeros(4), True
+        
+    
     horizontal_direction = np.array([
         direction_to_goal[0],
         direction_to_goal[1],
@@ -66,6 +70,10 @@ def action_with_local_avoidance(
         (-np.pi / 4, np.pi / 6), # derecha y arriba
     
         (0.0, -np.pi / 6),       # hacia objetivo y abajo
+
+        (np.pi, 0.0),
+        (np.pi, np.pi / 6),
+        (np.pi, np.pi / 3),
     ]
 
     current_clearance = local_map.closest_obstacle_distance(current_pos)
@@ -93,7 +101,12 @@ def action_with_local_avoidance(
         if candidate_position[2] < min_altitude:
             continue
         
-        if local_map.is_path_safe(current_pos, candidate_position):
+        path_status = local_map.is_path_safe(current_pos, candidate_position)
+
+        if path_status == 0:
+            continue
+
+        if path_status == 2:
             return np.array([
                 candidate_direction[0],
                 candidate_direction[1],
